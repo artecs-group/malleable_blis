@@ -1,0 +1,8 @@
+
+
+
+#bujaruelo
+
+./configure --prefix=/home/rafaelrs/blis-0.5.1_git_install/  --enable-threading=pthreads --enable-verbose-make --enable-debug  haswell
+
+
