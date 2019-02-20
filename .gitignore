@@ -19,6 +19,7 @@
 *.a
 *.so
 *.so.*
+*.dylib
 # test executables
 *.x
 *.pexe
@@ -47,3 +48,10 @@ output.testsuite
 
 # BLAS test output files
 out.*
+
+#MAC files
+.DS_Store
+
+#Eclipse file
+.project
+.cproject
