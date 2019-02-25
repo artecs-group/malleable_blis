@@ -52,6 +52,8 @@ void* bli_thrcomm_bcast
 	return object;
 }
 
+
+#ifndef BLIS_USE_PTHREAD_BARRIER
 // Use __sync_* builtins (assumed available) if __atomic_* ones are not present.
 #ifndef __ATOMIC_RELAXED
 
@@ -114,4 +116,4 @@ void bli_thrcomm_barrier_atomic( thrcomm_t* comm, dim_t t_id )
 			; // Empty loop body.
 	}
 }
-
+#endif

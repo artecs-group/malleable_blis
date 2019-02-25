@@ -1,10 +1,9 @@
 #MAC
 
-./configure --prefix=/Users/rafael/Documents/Git_projects/blis-0.5.1_git_install --enable-threading=openmp --enable-verbose-make --enable-debug CC=/usr/local/bin/gcc-8 haswell
+./configure --prefix=/Users/rafael/Documents/Git_projects/blis-0.5.1_git_install --enable-threading=pthreads --enable-verbose-make --enable-debug CC=/usr/local/bin/gcc-8 haswell
 
 
 #bujaruelo
 
-./configure --prefix=/home/rafaelrs/blis-0.5.1_git_install/  --enable-threading=pthreads --enable-verbose-make --enable-debug  haswell
-
+./configure --prefix=/home/rafaelrs/blis-0.5.1_git_install/  --enable-threading=pthreads --enable-verbose-make --enable-debug CFLAGS=-DBLIS_USE_PTHREAD_BARRIER haswell
 
