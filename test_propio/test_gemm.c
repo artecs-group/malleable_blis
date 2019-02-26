@@ -41,8 +41,8 @@
 
 //#define PRINT
 
-#define USE_EXPERT
-#define USE_CONTROLLER
+//#define USE_EXPERT
+//#define USE_CONTROLLER
 
 #ifdef USE_CONTROLLER
 
@@ -242,10 +242,10 @@ int main( int argc, char** argv )
 	n_repeats = 1;
 
 #ifndef PRINT
-	p_begin = 14000;
-	//p_begin = 1000;
-	p_end   = 17000;
-	//p_end   = 10000;
+	//p_begin = 14000;
+	p_begin = 1000;
+	//p_end   = 17000;
+	p_end   = 10000;
 	p_inc   = 1000;
 
 	m_input = -1;
@@ -344,7 +344,6 @@ int main( int argc, char** argv )
 			float*   cp     = bli_obj_buffer( &c );
 
 #ifdef USE_EXPERT
-			printf("Start Computation\n");
 			bli_sgemm_ex( BLIS_NO_TRANSPOSE, BLIS_NO_TRANSPOSE,
                                    mm, nn, kk, 
                                    alphap,
