@@ -1203,6 +1203,7 @@ typedef struct rntm_s
 {
 	dim_t     num_threads;
 	dim_t     thrloop[ BLIS_NUM_LOOPS ];
+	dim_t     thrloop_active[ BLIS_NUM_LOOPS ];
 
 } rntm_t;
 

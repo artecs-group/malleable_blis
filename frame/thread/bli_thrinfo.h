@@ -48,6 +48,9 @@ struct thrinfo_s
 	// The number of distinct threads used to parallelize the loop.
 	dim_t              n_way;
 
+	// The number of distinct active threads used to parallelize the loop.
+	dim_t              active_n_way;
+
 	// What we're working on.
 	dim_t              work_id;
 
@@ -82,6 +85,11 @@ static dim_t bli_thread_ocomm_id( thrinfo_t* t )
 static dim_t bli_thread_n_way( thrinfo_t* t )
 {
 	return t->n_way;
+}
+
+static dim_t bli_thread_active_n_way( thrinfo_t* t )
+{
+	return t->active_n_way;
 }
 
 static dim_t bli_thread_work_id( thrinfo_t* t )

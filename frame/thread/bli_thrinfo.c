@@ -72,6 +72,7 @@ void bli_thrinfo_init
 	thread->ocomm     = ocomm;
 	thread->ocomm_id  = ocomm_id;
 	thread->n_way     = n_way;
+	thread->active_n_way = -1;
 	thread->work_id   = work_id;
 	thread->free_comm = free_comm;
 

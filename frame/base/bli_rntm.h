@@ -86,6 +86,36 @@ static dim_t bli_rntm_pr_ways( rntm_t* rntm )
 	return bli_rntm_ways_for( BLIS_KR, rntm );
 }
 
+static dim_t bli_rntm_active_ways_for( bszid_t bszid, rntm_t* rntm )
+{
+	return rntm->thrloop_active[ bszid ];
+}
+
+static dim_t bli_rntm_jc_active_ways( rntm_t* rntm )
+{
+	return bli_rntm_active_ways_for( BLIS_NC, rntm );
+}
+static dim_t bli_rntm_pc_active_ways( rntm_t* rntm )
+{
+	return bli_rntm_active_ways_for( BLIS_KC, rntm );
+}
+static dim_t bli_rntm_ic_active_ways( rntm_t* rntm )
+{
+	return bli_rntm_active_ways_for( BLIS_MC, rntm );
+}
+static dim_t bli_rntm_jr_active_ways( rntm_t* rntm )
+{
+	return bli_rntm_active_ways_for( BLIS_NR, rntm );
+}
+static dim_t bli_rntm_ir_active_ways( rntm_t* rntm )
+{
+	return bli_rntm_active_ways_for( BLIS_MR, rntm );
+}
+static dim_t bli_rntm_pr_active_ways( rntm_t* rntm )
+{
+	return bli_rntm_active_ways_for( BLIS_KR, rntm );
+}
+
 //
 // -- rntm_t modification (internal use only) ----------------------------------
 //
@@ -125,6 +155,36 @@ static void bli_rntm_set_pr_ways_only( dim_t ways, rntm_t* rntm )
 	bli_rntm_set_ways_for_only( BLIS_KR, ways, rntm );
 }
 
+static void bli_rntm_set_active_ways_for_only( bszid_t loop, dim_t n_ways, rntm_t* rntm )
+{
+	rntm->thrloop_active[ loop ] = n_ways;
+}
+
+static void bli_rntm_set_jc_active_ways_only( dim_t ways, rntm_t* rntm )
+{
+	bli_rntm_set_active_ways_for_only( BLIS_NC, ways, rntm );
+}
+static void bli_rntm_set_pc_active_ways_only( dim_t ways, rntm_t* rntm )
+{
+	bli_rntm_set_active_ways_for_only( BLIS_KC, ways, rntm );
+}
+static void bli_rntm_set_ic_active_ways_only( dim_t ways, rntm_t* rntm )
+{
+	bli_rntm_set_active_ways_for_only( BLIS_MC, ways, rntm );
+}
+static void bli_rntm_set_jr_active_ways_only( dim_t ways, rntm_t* rntm )
+{
+	bli_rntm_set_active_ways_for_only( BLIS_NR, ways, rntm );
+}
+static void bli_rntm_set_ir_active_ways_only( dim_t ways, rntm_t* rntm )
+{
+	bli_rntm_set_active_ways_for_only( BLIS_MR, ways, rntm );
+}
+static void bli_rntm_set_pr_active_ways_only( dim_t ways, rntm_t* rntm )
+{
+	bli_rntm_set_active_ways_for_only( BLIS_KR, ways, rntm );
+}
+
 static void bli_rntm_set_ways_only( dim_t jc, dim_t pc, dim_t ic, dim_t jr, dim_t ir, rntm_t* rntm )
 {
 	// Record the number of ways of parallelism per loop.
@@ -136,6 +196,17 @@ static void bli_rntm_set_ways_only( dim_t jc, dim_t pc, dim_t ic, dim_t jr, dim_
 	bli_rntm_set_pr_ways_only(  1, rntm );
 }
 
+static void bli_rntm_set_active_ways_only( dim_t jc, dim_t pc, dim_t ic, dim_t jr, dim_t ir, rntm_t* rntm )
+{
+	// Record the number of ways of parallelism per loop.
+	bli_rntm_set_jc_active_ways_only( jc, rntm );
+	bli_rntm_set_pc_active_ways_only( pc, rntm );
+	bli_rntm_set_ic_active_ways_only( ic, rntm );
+	bli_rntm_set_jr_active_ways_only( jr, rntm );
+	bli_rntm_set_ir_active_ways_only( ir, rntm );
+	bli_rntm_set_pr_active_ways_only(  1, rntm );
+}
+
 static void bli_rntm_clear_num_threads_only( rntm_t* rntm )
 {
 	bli_rntm_set_num_threads_only( -1, rntm );
@@ -143,6 +214,10 @@ static void bli_rntm_clear_num_threads_only( rntm_t* rntm )
 static void bli_rntm_clear_ways_only( rntm_t* rntm )
 {
 	bli_rntm_set_ways_only( -1, -1, -1, -1, -1, rntm );
+}
+static void bli_rntm_clear_active_ways_only( rntm_t* rntm )
+{
+	bli_rntm_set_active_ways_only( -1, -1, -1, -1, -1, rntm );
 }
 
 //
@@ -156,6 +231,7 @@ static void bli_rntm_set_num_threads( dim_t nt, rntm_t* rntm )
 
 	// Set the individual ways of parallelism to default states.
 	bli_rntm_clear_ways_only( rntm );
+	bli_rntm_clear_active_ways_only( rntm );
 }
 
 static void bli_rntm_set_ways( dim_t jc, dim_t pc, dim_t ic, dim_t jr, dim_t ir, rntm_t* rntm )
@@ -167,6 +243,52 @@ static void bli_rntm_set_ways( dim_t jc, dim_t pc, dim_t ic, dim_t jr, dim_t ir,
 	bli_rntm_set_jr_ways_only( jr, rntm );
 	bli_rntm_set_ir_ways_only( ir, rntm );
 	bli_rntm_set_pr_ways_only(  1, rntm );
+
+	bli_rntm_clear_active_ways_only( rntm );
+
+	// Set the num_threads field to a default state.
+	bli_rntm_clear_num_threads_only( rntm );
+}
+
+static void bli_rntm_set_active_ways( dim_t jc, dim_t pc, dim_t ic, dim_t jr, dim_t ir, rntm_t* rntm )
+{
+	// Record the number of ways of parallelism per loop.
+	if(bli_rntm_jc_ways(rntm) < 1)
+		bli_rntm_set_jc_active_ways_only( -1, rntm );
+	else if( jc > bli_rntm_jc_ways(rntm))
+		bli_rntm_set_jc_active_ways_only( bli_rntm_jc_ways(rntm), rntm );
+	else
+		bli_rntm_set_jc_active_ways_only( jc, rntm );
+
+	if(bli_rntm_pc_ways(rntm) < 1)
+		bli_rntm_set_pc_active_ways_only(-1, rntm);
+	else if(pc > bli_rntm_pc_ways(rntm))
+		bli_rntm_set_pc_active_ways_only( bli_rntm_pc_ways(rntm), rntm );
+	else
+		bli_rntm_set_pc_active_ways_only( pc, rntm );
+
+	if(bli_rntm_ic_ways(rntm) < 1)
+		bli_rntm_set_ic_active_ways_only( -1, rntm );
+	else if(ic > bli_rntm_ic_ways(rntm))
+		bli_rntm_set_ic_active_ways_only( bli_rntm_ic_ways(rntm), rntm );
+	else
+		bli_rntm_set_ic_active_ways_only( ic, rntm );
+
+	if(bli_rntm_jr_ways(rntm) < 1)
+		bli_rntm_set_jr_active_ways_only( -1, rntm );
+	else if(jr > bli_rntm_jr_ways(rntm))
+		bli_rntm_set_jr_active_ways_only( bli_rntm_jr_ways(rntm), rntm );
+	else
+		bli_rntm_set_jr_active_ways_only( jr, rntm );
+
+	if(bli_rntm_ir_ways(rntm) < 1)
+		bli_rntm_set_ir_active_ways_only( -1, rntm );
+	else if(ir > bli_rntm_ir_ways(rntm))
+		bli_rntm_set_ir_active_ways_only( bli_rntm_ir_ways(rntm), rntm );
+	else
+		bli_rntm_set_ir_active_ways_only( ir, rntm );
+
+	bli_rntm_set_pr_active_ways_only(  1, rntm );
 
 	// Set the num_threads field to a default state.
 	bli_rntm_clear_num_threads_only( rntm );
@@ -181,12 +303,14 @@ static void bli_rntm_set_ways( dim_t jc, dim_t pc, dim_t ic, dim_t jr, dim_t ir,
 // will be in a good state upon return.
 
 #define BLIS_RNTM_INITIALIZER { .num_threads = -1, \
-                                .thrloop = { -1, -1, -1, -1, -1, -1 } } \
+                                .thrloop = { -1, -1, -1, -1, -1, -1 }, \
+								.thrloop_active = { -1, -1, -1, -1, -1, -1 } } \
 
 static void bli_rntm_init( rntm_t* rntm )
 {
 	bli_rntm_clear_num_threads_only( rntm );
 	bli_rntm_clear_ways_only( rntm );
+	bli_rntm_clear_active_ways_only( rntm );
 }
 
 // -----------------------------------------------------------------------------

@@ -71,11 +71,23 @@ void bli_thread_range_sub
        dim_t*     end
      )
 {
-	dim_t      n_way      = bli_thread_n_way( thread );
-
-	if ( n_way == 1 ) { *start = 0; *end = n; return; }
+	//dim_t      n_way      = bli_thread_n_way( thread );
+	dim_t n_way;
+	if(bli_thread_active_n_way(thread) != -1)
+		n_way = bli_thread_active_n_way( thread );
+	else
+		n_way = bli_thread_n_way( thread );
 
 	dim_t      work_id    = bli_thread_work_id( thread );
+
+	if ( n_way == 1 && work_id == 0) { *start = 0; *end = n; return; }
+
+	if(work_id >= n_way)
+	{
+		*start = n;
+		*end =n;
+		return;
+	}
 
 	dim_t      all_start  = 0;
 	dim_t      all_end    = n;
