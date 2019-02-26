@@ -1420,6 +1420,7 @@ void bli_thread_init_rntm_from_env
 	// Save the results back in the runtime object.
 	bli_rntm_set_num_threads_only( nt, rntm );
 	bli_rntm_set_ways_only( jc, pc, ic, jr, ir, rntm );
+	bli_rntm_set_active_ways_only( -1, -1, -1, -1, -1, rntm );
 
 #if 0
 	printf( "bli_thread_init_rntm_from_env()\n" );
