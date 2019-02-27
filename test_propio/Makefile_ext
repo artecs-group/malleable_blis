@@ -1,0 +1,37 @@
+
+#FC = /usr/local/Cellar/gcc/8.1.0/bin/gfortran-8
+FC = gfortran
+#CC = /usr/local/Cellar/gcc/8.1.0/bin/gcc-8
+CC = gcc
+
+
+FLAGS = -O3 -Wall -Wno-unused-function -Wfatal-errors -fPIC -std=c99 -D_POSIX_C_SOURCE=200112L -march=core-avx2 -mfpmath=sse -m64 -pthread
+
+LDFLAGS = -lm -lpthread
+
+#LIB = ../blis-0-3-2_git_install/lib/libblis.a
+#LIB = ../blis-0.3.2_install/lib/libblis.a
+#LIB = ../../blis-0.5.1_git_install/lib/libblis.a
+LIB = ../../blis-0.5.1_ref_install/lib/libblis.a
+
+#INC = -I../blis-0-3-2_git_install/include/blis
+#INC = -I../blis-0.3.2_install/include/blis
+#INC = -I../../blis-0.5.1_git_install/include/blis
+INC = -I../../blis-0.5.1_ref_install/include/blis
+
+
+all: test_gemm.x
+
+
+test_%.o: test_%.c
+	$(CC) $(INC) $(FLAGS) -DBLIS -c $< -o $@
+	
+test_%_check.o: test_%_check.c
+	$(CC) $(INC) $(FLAGS) -c $< -o $@
+
+
+test_%.x: test_%.o test_%_check.o $(LIB)
+	$(CC) $+ $(LIB) $(LDFLAGS) -o $@
+
+clean:
+	rm -rf *.o *~ core *.x *.dSYM
