@@ -41,7 +41,7 @@
 
 //#define PRINT
 
-//#define USE_EXPERT
+#define USE_EXPERT
 //#define USE_CONTROLLER
 
 #ifdef USE_CONTROLLER
@@ -195,21 +195,24 @@ int main( int argc, char** argv )
 	double gflops;
 	double resid=0.0;
 
-	int hilos;
-	if(argc != 2)
+	int hilos, max_hilos;
+	if(argc != 3)
+	{
 		hilos = 4;
+		max_hilos = 4;
+	}
 	else
+	{
 		hilos = atoi(argv[1]);
+		max_hilos = atoi(argv[2]);
+	}
 
 	cntx_t cntx;
 	rntm_t rntm = BLIS_RNTM_INITIALIZER;
 
 	bli_cntx_init_haswell( &cntx );
-#ifdef USE_CONTROLLER
-	bli_rntm_set_ways( 1, 1, MAX_THREADS, 1, 1, &rntm );
-#else
-	bli_rntm_set_ways( 1, 1, hilos, 1, 1, &rntm );
-#endif
+
+	bli_rntm_set_ways( 1, 1, max_hilos, 1, 1, &rntm );
 
 	bli_rntm_set_active_ways( 1, 1, hilos, 1, 1, &rntm );
 
@@ -223,11 +226,9 @@ int main( int argc, char** argv )
 	struct arg_thread args;
 	args.context = &cntx;
 	args.rntm = &rntm;
-	if(argc != 2)
-		args.thread = MAX_THREADS;
-	else
-		args.thread = hilos;
 	
+	args.thread = hilos;
+
 	if( pthread_create( &controller_thread, NULL, controller, &args ) )
         {
 		fprintf(stderr, "Error creating thread\n");
@@ -262,8 +263,8 @@ int main( int argc, char** argv )
 #endif
 
 #if 1
-	dt = BLIS_FLOAT;
-	//dt = BLIS_DOUBLE;
+	//dt = BLIS_FLOAT;
+	dt = BLIS_DOUBLE;
 #else
 	//dt = BLIS_SCOMPLEX;
 	dt = BLIS_DCOMPLEX;
@@ -277,7 +278,7 @@ int main( int argc, char** argv )
 
 
 	printf("\n***********************************************************************************\n\n");
-	printf("Test for the evaluation of the GEMM routine using %d threads\n\n", hilos);
+	printf("Test for the evaluation of the GEMM routine using %d threads (max: %d)\n\n", hilos, max_hilos);
 	printf("***********************************************************************************\n\n");
 	printf("%27s - %6s %6s %6s\t%7s\t%7s\t%9s\n","","m","n","k"," Time  ","GFLOPS","RESID");
 
