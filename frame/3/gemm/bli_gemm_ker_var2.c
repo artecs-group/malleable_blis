@@ -311,6 +311,16 @@ void PASTEMAC(ch,varname) \
 	dim_t jr_tid = bli_thread_work_id( thread ); \
 	dim_t ir_nt  = bli_thread_n_way( caucus ); \
 	dim_t ir_tid = bli_thread_work_id( caucus ); \
+	\
+	/*Adjust loop 1 Active threads */ \
+	int *n_way_active_local_p; \
+	int n_way_active_local_s; \
+	if (bli_thread_am_ochief( caucus )) \
+	{ \
+		n_way_active_local_s = rntm->thrloop_active[BLIS_MR]; \
+	} \
+	n_way_active_local_p = bli_thread_obroadcast( caucus, &(n_way_active_local_s)); \
+	caucus->active_n_way = *n_way_active_local_p; \
 \
 	dim_t jr_start, jr_end; \
 	dim_t ir_start, ir_end; \
