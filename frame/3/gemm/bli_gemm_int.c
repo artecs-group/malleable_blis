@@ -118,7 +118,23 @@ void bli_gemm_int
 
 		n_way_active_local_p = bli_thread_obroadcast( thread, &(n_way_active_local_s));
 		thread->active_n_way = *n_way_active_local_p;
-
+	}
+	else if(bszid == BLIS_NO_PART)
+	{
+		int *n_way_active_local_p;
+		int n_way_active_local_s = 1;
+		if (bli_thread_am_ochief( thread ))
+		{
+			for(bszid_t i=cntl->sub_node->bszid; i >= BLIS_MR; i--)
+			{
+				if(rntm->thrloop_active[i] < 1)
+					n_way_active_local_s*=rntm->thrloop[i];
+				else
+					n_way_active_local_s*=rntm->thrloop_active[i];
+			}
+		}
+		n_way_active_local_p = bli_thread_obroadcast( thread, &(n_way_active_local_s));
+		thread->active_n_way=*n_way_active_local_p;
 	}
 
 	// Extract the function pointer from the current control tree node.
