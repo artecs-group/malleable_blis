@@ -1,10 +1,10 @@
 
 
 
-for max_t in 2
+for max_t in 8 #1 2 3 4 6 8
 do
 
-	for t in 1 #2 #1 2 3 4
+	for t in 1 2 3 4 6 8
 	do
 		#export BLIS_JC_NT=${t} # loop 5 - n (externo)
 		#loop 4 not enabled - k
@@ -14,7 +14,7 @@ do
 
 		echo $t ${max_t}
 
-		./test_gemm.x $t ${max_t}  #> salida_${i}_threads.txt
+		taskset -c 0-7 ./test_gemm.x $t ${max_t}  #> salida_${i}_threads.txt
 
 	done
 done

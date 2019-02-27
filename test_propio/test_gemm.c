@@ -42,6 +42,7 @@
 //#define PRINT
 
 #define USE_EXPERT
+#define USE_MLB
 //#define USE_CONTROLLER
 
 #ifdef USE_CONTROLLER
@@ -214,7 +215,11 @@ int main( int argc, char** argv )
 
 	bli_rntm_set_ways( 1, 1, max_hilos, 1, 1, &rntm );
 
+#ifdef USE_MLB
+
 	bli_rntm_set_active_ways( 1, 1, hilos, 1, 1, &rntm );
+
+#endif
 
 
 	//bli_cntx_print( &cntx );
@@ -467,9 +472,9 @@ int main( int argc, char** argv )
 		libblis_test_gemm_check(&alpha, &a, &b, &beta, &c, &c_save, &resid );
 
 #ifdef USE_EXPERT
-		printf( "data_gemm_expert_%d", hilos );
+		printf( "data_gemm_expert_%d_%d", hilos, max_hilos );
 #else
-		printf( "data_gemm_blis" );
+		printf( "data_gemm_blis_%d", hilos );
 #endif
 		printf( "( %2lu, 1:6 ) = [ %6lu %6lu %6lu\t%4.3f\t%4.3f\t%1.3e ];\n",
 		        ( unsigned long )(p - p_begin + 1)/p_inc + 1,
