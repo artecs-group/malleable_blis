@@ -248,8 +248,16 @@ void bli_rntm_print
 	dim_t jr = bli_rntm_jr_ways( rntm );
 	dim_t ir = bli_rntm_ir_ways( rntm );
 
+	dim_t jc_active = bli_rntm_jc_active_ways( rntm );
+	dim_t pc_active = bli_rntm_pc_active_ways( rntm );
+	dim_t ic_active = bli_rntm_ic_active_ways( rntm );
+	dim_t jr_active = bli_rntm_jr_active_ways( rntm );
+	dim_t ir_active = bli_rntm_ir_active_ways( rntm );
+
 	printf( "rntm contents    nt  jc  pc  ic  jr  ir\n" );
 	printf( "               %4d%4d%4d%4d%4d%4d\n", (int)nt, (int)jc, (int)pc,
 	                                               (int)ic, (int)jr, (int)ir );
+	printf( " (Active)      %4d%4d%4d%4d%4d%4d\n", (int)-1, (int)jc_active, (int)pc_active,
+		                                               (int)ic_active, (int)jr_active, (int)ir_active );
 }
 
