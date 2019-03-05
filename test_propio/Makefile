@@ -170,7 +170,7 @@ LIBBLIS_LINK   := $(LIB_PATH)/$(LIBBLIS_L)
 #all: blis openblas mkl
 all: test
 
-test: test_gemm.x
+test: test_gemm.x test_trsm.x
 
 blis: test_dotv_blis.x \
       test_axpyv_blis.x \
@@ -302,7 +302,7 @@ test_%_blis.o: test_%.c
 	$(CC) $(CFLAGS) -DBLIS -c $< -o $@
 	
 test_%.o: test_%.c
-	$(CC) $(CFLAGS) -DBLIS -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 	
 test_%_check.o: test_%_check.c
 	$(CC) $(CFLAGS) -c $< -o $@

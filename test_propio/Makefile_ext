@@ -20,7 +20,7 @@ LIB = ../../blis-0.5.1_ref_install/lib/libblis.a
 INC = -I../../blis-0.5.1_ref_install/include/blis
 
 
-all: test_gemm.x
+all: test_gemm.x test_trsm.x
 
 
 test_%.o: test_%.c

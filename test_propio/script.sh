@@ -14,7 +14,8 @@ do
 
 		echo $t ${max_t}
 
-		taskset -c 0-7 ./test_gemm.x $t ${max_t}  #> salida_${i}_threads.txt
+		#taskset -c 0-7 ./test_gemm.x $t ${max_t}  #> salida_${i}_threads.txt
+		taskset -c 0-7 ./test_trsm.x $t ${max_t}  #> salida_${i}_threads.txt
 
 	done
 done
