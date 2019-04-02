@@ -7,3 +7,6 @@
 
 ./configure --prefix=/home/rafaelrs/blis-0.5.1_git_install/  --enable-threading=pthreads --enable-verbose-make --enable-debug CFLAGS=-DBLIS_USE_PTHREAD_BARRIER haswell
 
+
+#volta 1
+./configure --prefix=/home/rafaelrs/blis-0.5.1_git_install_skx/  --enable-threading=pthreads --enable-verbose-make CFLAGS=-DBLIS_USE_PTHREAD_BARRIER skx
