@@ -107,34 +107,41 @@ void bli_gemm_int
 	bli_thrinfo_grow( rntm, cntl, thread );
 
 	bszid_t bszid = bli_cntl_bszid( cntl);
-	if(bszid <= BLIS_NC)
+	if(bszid <= BLIS_NC && bszid >= BLIS_KC)
 	{
 		int *n_way_active_local_p;
 		int n_way_active_local_s;
 		if (bli_thread_am_ochief( thread ))
 		{
+			for(bszid_t i = BLIS_NC ; i >= BLIS_MR; i--)
+				rntm->thrloop_active_saved[i] = rntm->thrloop_active[i];
+
 			n_way_active_local_s = rntm->thrloop_active[bszid];
 		}
 
 		n_way_active_local_p = bli_thread_obroadcast( thread, &(n_way_active_local_s));
 		thread->active_n_way = *n_way_active_local_p;
 	}
+	else if (bszid <= BLIS_NC)
+	{
+		thread->active_n_way = rntm->thrloop_active_saved[bszid];
+	}
 	else if(bszid == BLIS_NO_PART)
 	{
-		int *n_way_active_local_p;
+		//int *n_way_active_local_p;
 		int n_way_active_local_s = 1;
-		if (bli_thread_am_ochief( thread ))
-		{
+		//if (bli_thread_am_ochief( thread ))
+		//{
 			for(bszid_t i=cntl->sub_node->bszid; i >= BLIS_MR; i--)
 			{
-				if(rntm->thrloop_active[i] < 1)
+				if(rntm->thrloop_active_saved[i] < 1)
 					n_way_active_local_s*=rntm->thrloop[i];
 				else
-					n_way_active_local_s*=rntm->thrloop_active[i];
+					n_way_active_local_s*=rntm->thrloop_active_saved[i];
 			}
-		}
-		n_way_active_local_p = bli_thread_obroadcast( thread, &(n_way_active_local_s));
-		thread->active_n_way=*n_way_active_local_p;
+		//}
+		//n_way_active_local_p = bli_thread_obroadcast( thread, &(n_way_active_local_s));
+		thread->active_n_way = n_way_active_local_s;
 	}
 
 	// Extract the function pointer from the current control tree node.

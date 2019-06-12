@@ -304,7 +304,8 @@ static void bli_rntm_set_active_ways( dim_t jc, dim_t pc, dim_t ic, dim_t jr, di
 
 #define BLIS_RNTM_INITIALIZER { .num_threads = -1, \
                                 .thrloop = { -1, -1, -1, -1, -1, -1 }, \
-								.thrloop_active = { -1, -1, -1, -1, -1, -1 } } \
+				.thrloop_active = { -1, -1, -1, -1, -1, -1 }, \
+				.thrloop_active_saved = { -1, -1, -1, -1, -1, -1 } } \
 
 static void bli_rntm_init( rntm_t* rntm )
 {
