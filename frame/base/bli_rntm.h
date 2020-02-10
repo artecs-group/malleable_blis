@@ -237,11 +237,27 @@ static void bli_rntm_set_num_threads( dim_t nt, rntm_t* rntm )
 static void bli_rntm_set_ways( dim_t jc, dim_t pc, dim_t ic, dim_t jr, dim_t ir, rntm_t* rntm )
 {
 	// Record the number of ways of parallelism per loop.
-	bli_rntm_set_jc_ways_only( jc, rntm );
-	bli_rntm_set_pc_ways_only( pc, rntm );
-	bli_rntm_set_ic_ways_only( ic, rntm );
-	bli_rntm_set_jr_ways_only( jr, rntm );
-	bli_rntm_set_ir_ways_only( ir, rntm );
+	if(jc < 1)
+		bli_rntm_set_jc_ways_only( 1, rntm );
+	else
+		bli_rntm_set_jc_ways_only( jc, rntm );
+	if (pc < 1)
+		bli_rntm_set_pc_ways_only( 1, rntm );
+	else
+		bli_rntm_set_pc_ways_only( pc, rntm );
+	if (ic < 1)
+		bli_rntm_set_ic_ways_only( 1, rntm );
+	else
+		bli_rntm_set_ic_ways_only( ic, rntm );
+	if (jr < 1)
+		bli_rntm_set_jr_ways_only( 1, rntm );
+	else
+		bli_rntm_set_jr_ways_only( jr, rntm );
+	if (ir < 1)
+		bli_rntm_set_ir_ways_only( 1, rntm );
+	else
+		bli_rntm_set_ir_ways_only( ir, rntm );
+
 	bli_rntm_set_pr_ways_only(  1, rntm );
 
 	bli_rntm_clear_active_ways_only( rntm );
@@ -253,35 +269,40 @@ static void bli_rntm_set_ways( dim_t jc, dim_t pc, dim_t ic, dim_t jr, dim_t ir,
 static void bli_rntm_set_active_ways( dim_t jc, dim_t pc, dim_t ic, dim_t jr, dim_t ir, rntm_t* rntm )
 {
 	// Record the number of ways of parallelism per loop.
-	if(bli_rntm_jc_ways(rntm) < 1)
+	//if(bli_rntm_jc_ways(rntm) < 1)
+	if(jc < 1)
 		bli_rntm_set_jc_active_ways_only( -1, rntm );
 	else if( jc > bli_rntm_jc_ways(rntm))
 		bli_rntm_set_jc_active_ways_only( bli_rntm_jc_ways(rntm), rntm );
 	else
 		bli_rntm_set_jc_active_ways_only( jc, rntm );
 
-	if(bli_rntm_pc_ways(rntm) < 1)
+	//if(bli_rntm_pc_ways(rntm) < 1)
+	if(pc < 1)
 		bli_rntm_set_pc_active_ways_only(-1, rntm);
 	else if(pc > bli_rntm_pc_ways(rntm))
 		bli_rntm_set_pc_active_ways_only( bli_rntm_pc_ways(rntm), rntm );
 	else
 		bli_rntm_set_pc_active_ways_only( pc, rntm );
 
-	if(bli_rntm_ic_ways(rntm) < 1)
+	//if(bli_rntm_ic_ways(rntm) < 1)
+	if(ic < 1)
 		bli_rntm_set_ic_active_ways_only( -1, rntm );
 	else if(ic > bli_rntm_ic_ways(rntm))
 		bli_rntm_set_ic_active_ways_only( bli_rntm_ic_ways(rntm), rntm );
 	else
 		bli_rntm_set_ic_active_ways_only( ic, rntm );
 
-	if(bli_rntm_jr_ways(rntm) < 1)
+	//if(bli_rntm_jr_ways(rntm) < 1)
+	if(jr < 1)
 		bli_rntm_set_jr_active_ways_only( -1, rntm );
 	else if(jr > bli_rntm_jr_ways(rntm))
 		bli_rntm_set_jr_active_ways_only( bli_rntm_jr_ways(rntm), rntm );
 	else
 		bli_rntm_set_jr_active_ways_only( jr, rntm );
 
-	if(bli_rntm_ir_ways(rntm) < 1)
+	//if(bli_rntm_ir_ways(rntm) < 1)
+	if(ir < 1)
 		bli_rntm_set_ir_active_ways_only( -1, rntm );
 	else if(ir > bli_rntm_ir_ways(rntm))
 		bli_rntm_set_ir_active_ways_only( bli_rntm_ir_ways(rntm), rntm );
