@@ -233,6 +233,7 @@ void bli_rntm_set_ways_from_rntm
 	// Save the results back in the runtime object.
 	bli_rntm_set_num_threads_only( nt, rntm );
 	bli_rntm_set_ways_only( jc, pc, ic, jr, ir, rntm );
+	bli_rntm_check_ways(rntm);
 }
 
 void bli_rntm_print
