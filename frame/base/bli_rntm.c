@@ -64,6 +64,12 @@ bli_rntm_print( rntm );
 		dim_t ic = bli_rntm_ic_ways( rntm );
 		dim_t jr = bli_rntm_jr_ways( rntm );
 		dim_t ir = bli_rntm_ir_ways( rntm );
+		
+		dim_t jc_active = bli_rntm_jc_active_ways( rntm );
+		dim_t pc_active = bli_rntm_pc_active_ways( rntm );
+		dim_t ic_active = bli_rntm_ic_active_ways( rntm );
+		dim_t jr_active = bli_rntm_jr_active_ways( rntm );
+		dim_t ir_active = bli_rntm_ir_active_ways( rntm );
 
 		// Notice that, if we do need to update the ways, we don't need to
 		// update the num_threads field since we only reshuffle where the
@@ -103,6 +109,25 @@ bli_rntm_print( rntm );
 		{
 			// For trsm_l, we extract all parallelism from the jc and jr loops.
 			// For trsm_r, we extract all parallelism from the ic loop.
+
+			dim_t threads;
+			if (pc_active == -1 && ic_active == -1 && jr_active == -1 && ir_active == -1)
+			{
+				threads = -1;
+			}
+			else
+			{
+				if(pc_active == -1)
+					pc_active = 1;
+				if(ic_active == -1)
+					ic_active = 1;
+				if(jr_active == -1)
+					jr_active = 1;
+				if(ir_active == -1)
+					ir_active = 1;
+				threads = ic_active * pc_active * jr_active * ir_active;
+			}
+
 			if ( bli_is_left( side ) )
 			{
 				bli_rntm_set_ways_only
@@ -114,9 +139,30 @@ bli_rntm_print( rntm );
 				  1,
 				  rntm
 				);
+				
+				bli_rntm_set_active_ways_only
+				(
+				  jc_active,
+				  -1,
+				  -1,
+				  threads,
+				  -1,
+				  rntm
+				);
 			}
 			else // if ( bli_is_right( side ) )
 			{
+				if(jc_active == -1 && threads == -1)
+					threads = -1;
+				else
+				{
+					if(jc_active == -1)
+						jc_active = 1;
+					if(threads == -1)
+						threads = 1;
+					threads = threads * jc_active;
+				}
+
 				bli_rntm_set_ways_only
 				(
 				  1,
@@ -124,6 +170,16 @@ bli_rntm_print( rntm );
 				  ic * pc * jc * ir * jr,
 				  1,
 				  1,
+				  rntm
+				);
+				
+				bli_rntm_set_active_ways_only
+				(
+				  -1,
+				  -1,
+				  threads,
+				  -1,
+				  -1,
 				  rntm
 				);
 			}
